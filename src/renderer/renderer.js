@@ -297,6 +297,14 @@ function scheduleRandomBehavior() {
   }, 3500 + Math.random() * 7000);
 }
 
+function maybePlaySoundlessReaction() {
+  if (state.pet === "dog" && Math.random() < 0.35) {
+    showBubbleMessage("🐶 *happy tail wagging*");
+  } else if (state.pet === "cat" && Math.random() < 0.35) {
+    showBubbleMessage("🐱 *purrs softly*");
+  }
+}
+
 function interactWithPet() {
   const responses = state.pet === "dog"
     ? ["🐶 Woof! Good human.", "🐾 Tail wag!", "❤️ Belly rub accepted.", "🎾 Play with me!"]
@@ -304,6 +312,7 @@ function interactWithPet() {
 
   petReact("happy");
   showBubbleMessage(responses[Math.floor(Math.random() * responses.length)]);
+  maybePlaySoundlessReaction();
 }
 
 function walkTo(x, y, duration) {
