@@ -4,5 +4,5 @@ contextBridge.exposeInMainWorld("pixelPet", {
   platform: process.platform,
   quit: () => ipcRenderer.send("quit-app"),
   getSystemInfo: () => ipcRenderer.invoke("system-info"),
-  movePet: (x, y) => ipcRenderer.send("move-pet", { x, y })
+  movePet: (x, y, duration = 1200) => ipcRenderer.send("move-pet", { x, y, duration })
 });
