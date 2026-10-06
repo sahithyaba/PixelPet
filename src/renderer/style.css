@@ -56,3 +56,9 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:transparent
 @keyframes earHappyLeft{from{transform:rotate(8deg)}to{transform:rotate(30deg)}}@keyframes earHappyRight{from{transform:rotate(-8deg)}to{transform:rotate(-30deg)}}
 @keyframes sniffEar{from{transform:rotate(18deg)}to{transform:rotate(7deg)}}@keyframes lookEar{from{transform:rotate(18deg)}to{transform:rotate(2deg)}}
 @keyframes boredTail{50%{transform:rotate(-10deg)}}@keyframes lieTail{from{transform:rotate(-27deg)}to{transform:rotate(-8deg)}}
+
+.touch-eye,.touch-nose,.touch-collar,.touch-tail{-webkit-app-region:no-drag;cursor:pointer}
+.touch-eye{padding:5px}.touch-nose{padding:5px}.touch-collar{padding:5px}.touch-tail{padding:8px}
+.dog.touch-wag .tail{animation:tailHappy .11s ease-in-out infinite alternate}.dog.touch-wag{animation:happy .28s ease-in-out 2}
+.dog.touch-look .head{animation:lookHead .35s ease-in-out 3}.dog.touch-look .ear-left,.dog.touch-look .ear-right{animation:lookEar .35s ease-in-out 3}
+.dog.touch-happy .tail{animation:tailHappy .12s ease-in-out infinite alternate}.dog.touch-happy .tongue{display:block}
