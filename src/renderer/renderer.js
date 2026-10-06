@@ -249,7 +249,7 @@ let systemIdleSeconds = 0;
 const IDLE_TO_WANDER = 5 * 60;
 let waterReminderTimer = null;
 
-const DOG_STATES = ["idle","walk","happy","curious","sit","greet","pat","bored","angry","confront","look","sniff","stretch","lie","wake"];
+const DOG_STATES = ["idle","walk","happy","curious","sit","greet","pat","bored","angry","confront","look","sniff","stretch","lie","wake","touch-look","touch-happy","touch-wag"];
 
 function setDogState(stateName, duration = 1800) {
   const safeState = DOG_STATES.includes(stateName) ? stateName : "idle";
