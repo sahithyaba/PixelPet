@@ -1,4 +1,5 @@
-const { app, BrowserWindow, Tray, Menu, nativeImage, screen } = require("electron");
+const { app, BrowserWindow, Tray, Menu, nativeImage, screen, ipcMain } = require("electron");
+const os = require("os");
 const path = require("path");
 
 let petWindow;
@@ -9,10 +10,10 @@ function createPet() {
   const { width, height } = display.workAreaSize;
 
   petWindow = new BrowserWindow({
-    width: 180,
-    height: 180,
-    x: Math.max(20, width - 210),
-    y: Math.max(20, height - 210),
+    width: 340,
+    height: 330,
+    x: Math.max(20, width - 380),
+    y: Math.max(20, height - 360),
     frame: false,
     transparent: true,
     resizable: false,
@@ -39,10 +40,22 @@ function createTray() {
 
   tray.setContextMenu(Menu.buildFromTemplate([
     { label: "Show PixelPet", click: () => petWindow?.show() },
+    { label: "Hide PixelPet", click: () => petWindow?.hide() },
     { type: "separator" },
     { label: "Quit PixelPet", click: () => app.quit() }
   ]));
 }
+
+ipcMain.handle("system-info", () => ({
+  platform: process.platform,
+  cpu: os.cpus()[0]?.model || "Unknown",
+  cpuCores: os.cpus().length,
+  memoryTotalGB: +(os.totalmem() / 1024 ** 3).toFixed(1),
+  memoryFreeGB: +(os.freemem() / 1024 ** 3).toFixed(1),
+  uptimeMinutes: Math.floor(os.uptime() / 60)
+}));
+
+ipcMain.on("quit-app", () => app.quit());
 
 app.whenReady().then(() => {
   createPet();
@@ -50,4 +63,4 @@ app.whenReady().then(() => {
 });
 
 app.on("window-all-closed", (event) => event.preventDefault());
-app.on("before-quit", () => { if (tray) tray.destroy(); });
+app.on("before-quit", () => tray?.destroy());
