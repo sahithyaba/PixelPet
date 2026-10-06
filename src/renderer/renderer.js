@@ -241,68 +241,42 @@ setTimeout(() => {
 
 /* Autonomous desktop-pet behavior */
 let wanderTimer = null;
-let wanderActive = true;
-let walking = false;
+let behaviorTimer = null;
 let attentionTimer = null;
-let interactionTimer = null;
+let walking = false;
+let wanderActive = true;
+
+const DOG_STATES = ["idle","walk","happy","curious","sit","greet","pat","bored","angry","confront","look","sniff","stretch","lie","wake"];
+
+function setDogState(stateName, duration = 1800) {
+  const safeState = DOG_STATES.includes(stateName) ? stateName : "idle";
+  dog.classList.remove(...DOG_STATES);
+  dog.classList.add(safeState);
+  clearTimeout(attentionTimer);
+  if (safeState !== "idle" && duration > 0) {
+    attentionTimer = setTimeout(() => setDogState("idle", 0), duration);
+  }
+}
+
+function petReact(type) {
+  setDogState(type, type === "walk" ? 0 : type === "happy" || type === "pat" ? 1400 : 2200);
+}
 
 function showBubbleMessage(text) {
   addMessage(text);
 }
 
-function petReact(type) {
-  const pet = dog;
-  pet.classList.remove("idle","happy","curious","sleep","walk","sit","greet","pat","bored","angry","confront");
-  pet.classList.add(type);
-  clearTimeout(attentionTimer);
-  attentionTimer = setTimeout(() => {
-    pet.classList.remove(type);
-    pet.classList.add("idle");
-  }, type === "happy" || type === "pat" ? 1400 : 2200);
-}
-
-function dogLifeBehavior() {
-  if (state.mood === "sleepy" || walking) return;
-  const roll = Math.random();
-  if (roll < 0.18) petReact("look");
-  else if (roll < 0.34) petReact("sniff");
-  else if (roll < 0.45) petReact("stretch");
-  else if (roll < 0.53) petReact("greet");
-  else if (roll < 0.62) petReact("bored");
-  else if (roll < 0.68) petReact("sit");
-}
-
-function randomBehavior() {
-  if (state.mood === "sleepy" || walking) return;
-
-  const pet = activePet();
-  const roll = Math.random();
-
-  if (roll < 0.22) {
-    petReact("curious");
-  } else if (roll < 0.40) {
-    petReact("happy");
-  } else if (roll < 0.54) {
-    petReact("sit");
-  } else if (roll < 0.65) {
-    petReact("lie");
-    setTimeout(() => {
-      if (state.mood !== "sleepy") petReact("wake");
-    }, 2600);
-  }
-}
-
-function scheduleRandomBehavior() {
-  clearTimeout(interactionTimer);
-  interactionTimer = setTimeout(() => {
-    dogLifeBehavior();
-    randomBehavior();
-    scheduleRandomBehavior();
-  }, 3500 + Math.random() * 7000);
-}
-
-function maybePlaySoundlessReaction() {
-  if (Math.random() < 0.35) showBubbleMessage("🐶 *happy tail wagging*");
+function interactWithPet() {
+  const responses = [
+    "🐶 Woof!",
+    "🐾 Tail wag!",
+    "❤️ Belly rub accepted.",
+    "🎾 Play with me!",
+    "👀 Who's there?",
+    "🐕 *happy wiggle*"
+  ];
+  petReact("pat");
+  showBubbleMessage(responses[Math.floor(Math.random() * responses.length)]);
 }
 
 function lookAtCursor() {
@@ -310,23 +284,14 @@ function lookAtCursor() {
   petReact("look");
 }
 
-function interactWithPet() {
-  const responses = ["🐶 Woof!","🐾 Tail wag!","❤️ Belly rub accepted.","🎾 Play with me!","👀 Who's there?","🐕 *happy wiggle*"];
-  petReact("pat");
-  showBubbleMessage(responses[Math.floor(Math.random() * responses.length)]);
-}
-
 function walkTo(x, y, duration) {
   if (!window.pixelPet?.movePet) return;
-  const pet = activePet();
-  pet.classList.remove("idle", "sleep", "happy");
-  pet.classList.add("walk");
   walking = true;
+  setDogState("walk", 0);
   window.pixelPet.movePet(Math.round(x), Math.round(y), duration);
   setTimeout(() => {
     walking = false;
-    pet.classList.remove("walk");
-    pet.classList.add("idle");
+    setDogState("idle");
   }, duration);
 }
 
@@ -342,11 +307,57 @@ function scheduleWander() {
   const maxY = Math.max(margin, window.screen.availHeight - 390);
   const x = margin + Math.random() * Math.max(1, maxX - margin);
   const y = margin + Math.random() * Math.max(1, maxY - margin);
-  const duration = 900 + Math.floor(Math.random() * 1400);
+  const duration = 1100 + Math.floor(Math.random() * 1600);
 
   walkTo(x, y, duration);
-  wanderTimer = setTimeout(scheduleWander, duration + 2500 + Math.random() * 3500);
+  wanderTimer = setTimeout(scheduleWander, duration + 2800 + Math.random() * 4500);
 }
 
+function dogLifeBehavior() {
+  if (state.mood === "sleepy" || walking) return;
+
+  const roll = Math.random();
+
+  if (roll < 0.16) {
+    petReact("look");
+  } else if (roll < 0.30) {
+    petReact("sniff");
+  } else if (roll < 0.40) {
+    petReact("stretch");
+  } else if (roll < 0.49) {
+    petReact("greet");
+  } else if (roll < 0.58) {
+    petReact("sit");
+  } else if (roll < 0.66) {
+    petReact("bored");
+  } else if (roll < 0.72) {
+    petReact("lie");
+    setTimeout(() => {
+      if (state.mood !== "sleepy") petReact("wake");
+    }, 2800);
+  }
+}
+
+function scheduleDogLife() {
+  clearTimeout(behaviorTimer);
+  behaviorTimer = setTimeout(() => {
+    dogLifeBehavior();
+    scheduleDogLife();
+  }, 3500 + Math.random() * 7000);
+}
+
+dog.addEventListener("mouseenter", () => {
+  if (state.mood !== "sleepy" && !walking) petReact("curious");
+});
+
+dog.addEventListener("mousemove", () => {
+  if (state.mood !== "sleepy" && !walking && Math.random() < 0.018) lookAtCursor();
+});
+
+dog.addEventListener("click", () => {
+  interactWithPet();
+  input.focus();
+});
+
 setTimeout(scheduleWander, 3000);
-scheduleRandomBehavior();
+scheduleDogLife();
