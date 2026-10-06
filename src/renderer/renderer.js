@@ -251,19 +251,22 @@ let waterReminderTimer = null;
 
 const DOG_STATES = ["idle","walk","happy","curious","sit","greet","pat","bored","angry","confront","look","sniff","stretch","lie","sleep","wake","touch-look","touch-happy","touch-wag"];
 
-const DOG_FRAMES = {
-  idle: ["./assets/dog-idle.svg"],
-  walk: ["./assets/dog-walk-1.svg","./assets/dog-walk-2.svg","./assets/dog-walk-3.svg","./assets/dog-walk-2.svg"],
-  sit: ["./assets/dog-sit.svg"],
-  lie: ["./assets/dog-lie.svg"],
-  sleep: ["./assets/dog-sleep.svg"],
-  wake: ["./assets/dog-wake.svg"],
-  happy: ["./assets/dog-idle.svg","./assets/dog-wake.svg"],
-  greet: ["./assets/dog-idle.svg","./assets/dog-wake.svg"],
-  pat: ["./assets/dog-idle.svg","./assets/dog-wake.svg"],
-  "touch-look": ["./assets/dog-idle.svg","./assets/dog-wake.svg"],
-  "touch-happy": ["./assets/dog-idle.svg","./assets/dog-wake.svg"],
-  "touch-wag": ["./assets/dog-idle.svg","./assets/dog-wake.svg"]
+const DOG_ATLAS = {
+  idle: [[0,0]],
+  walk: [[1,0],[2,0],[3,0],[2,0]],
+  sit: [[0,1]],
+  look: [[1,1]],
+  sniff: [[2,1]],
+  stretch: [[3,1]],
+  lie: [[0,2]],
+  sleep: [[1,2]],
+  wake: [[2,2]],
+  happy: [[3,2]],
+  greet: [[3,2]],
+  pat: [[3,2]],
+  "touch-look": [[1,1]],
+  "touch-happy": [[3,2]],
+  "touch-wag": [[3,2]]
 };
 let dogFrameTimer = null;
 let dogFrameIndex = 0;
@@ -271,14 +274,16 @@ let dogFrameIndex = 0;
 function playDogFrames(stateName) {
   clearInterval(dogFrameTimer);
   dogFrameIndex = 0;
-  const frames = DOG_FRAMES[stateName] || DOG_FRAMES.idle;
+  const frames = DOG_ATLAS[stateName] || DOG_ATLAS.idle;
   const render = () => {
-    dog.style.setProperty("--dog-frame", `url("${frames[dogFrameIndex % frames.length]}")`);
+    const frame = frames[dogFrameIndex % frames.length];
+    dog.style.setProperty("--dog-pos-x", (frame[0] / 3) * 100 + "%");
+    dog.style.setProperty("--dog-pos-y", (frame[1] / 2) * 100 + "%");
     dogFrameIndex += 1;
   };
   render();
   if (frames.length > 1) {
-    const speed = stateName === "walk" ? 145 : stateName === "happy" || stateName === "greet" ? 260 : 420;
+    const speed = stateName === "walk" ? 145 : 280;
     dogFrameTimer = setInterval(render, speed);
   }
 }
