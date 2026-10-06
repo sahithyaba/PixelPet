@@ -223,7 +223,19 @@ dog.addEventListener("mouseleave", () => dog.classList.remove("walk"));
 dog.addEventListener("click", () => { input.focus(); });
 
 cat.addEventListener("click", () => {
+  interactWithPet();
   input.focus();
+});
+
+dog.addEventListener("click", () => {
+  interactWithPet();
+  input.focus();
+});
+
+document.addEventListener("mousemove", (event) => {
+  const pet = activePet();
+  if (Math.random() > 0.015 || state.mood === "sleepy" || walking) return;
+  petReact("curious");
 });
 
 setInterval(checkReminders, 1000);
@@ -239,6 +251,60 @@ setTimeout(() => {
 let wanderTimer = null;
 let wanderActive = true;
 let walking = false;
+let attentionTimer = null;
+let interactionTimer = null;
+
+function showBubbleMessage(text) {
+  addMessage(text);
+}
+
+function petReact(type) {
+  const pet = activePet();
+  pet.classList.remove("happy", "curious", "sleep", "walk");
+  pet.classList.add(type);
+  clearTimeout(attentionTimer);
+  attentionTimer = setTimeout(() => {
+    pet.classList.remove(type);
+    pet.classList.add("idle");
+  }, type === "happy" ? 1400 : 2200);
+}
+
+function randomBehavior() {
+  if (state.mood === "sleepy" || walking) return;
+
+  const pet = activePet();
+  const roll = Math.random();
+
+  if (roll < 0.22) {
+    petReact("curious");
+  } else if (roll < 0.40) {
+    petReact("happy");
+  } else if (roll < 0.54) {
+    petReact("sit");
+  } else if (roll < 0.65) {
+    petReact("sleep");
+    setTimeout(() => {
+      if (state.mood !== "sleepy") petReact("idle");
+    }, 1800);
+  }
+}
+
+function scheduleRandomBehavior() {
+  clearTimeout(interactionTimer);
+  interactionTimer = setTimeout(() => {
+    randomBehavior();
+    scheduleRandomBehavior();
+  }, 3500 + Math.random() * 7000);
+}
+
+function interactWithPet() {
+  const responses = state.pet === "dog"
+    ? ["🐶 Woof! Good human.", "🐾 Tail wag!", "❤️ Belly rub accepted.", "🎾 Play with me!"]
+    : ["🐱 Meow! Head scratches!", "🐾 Purrrr...", "❤️ I like that.", "🧶 Play time!"];
+
+  petReact("happy");
+  showBubbleMessage(responses[Math.floor(Math.random() * responses.length)]);
+}
 
 function walkTo(x, y, duration) {
   if (!window.pixelPet?.movePet) return;
@@ -273,3 +339,4 @@ function scheduleWander() {
 }
 
 setTimeout(scheduleWander, 3000);
+scheduleRandomBehavior();
