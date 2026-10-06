@@ -251,10 +251,43 @@ let waterReminderTimer = null;
 
 const DOG_STATES = ["idle","walk","happy","curious","sit","greet","pat","bored","angry","confront","look","sniff","stretch","lie","wake","touch-look","touch-happy","touch-wag"];
 
+const DOG_FRAMES = {
+  idle: ["./assets/dog-idle.svg"],
+  walk: ["./assets/dog-walk-1.svg","./assets/dog-walk-2.svg","./assets/dog-walk-3.svg","./assets/dog-walk-2.svg"],
+  sit: ["./assets/dog-sit.svg"],
+  lie: ["./assets/dog-lie.svg"],
+  sleep: ["./assets/dog-sleep.svg"],
+  wake: ["./assets/dog-wake.svg"],
+  happy: ["./assets/dog-idle.svg","./assets/dog-wake.svg"],
+  greet: ["./assets/dog-idle.svg","./assets/dog-wake.svg"],
+  pat: ["./assets/dog-idle.svg","./assets/dog-wake.svg"],
+  "touch-look": ["./assets/dog-idle.svg","./assets/dog-wake.svg"],
+  "touch-happy": ["./assets/dog-idle.svg","./assets/dog-wake.svg"],
+  "touch-wag": ["./assets/dog-idle.svg","./assets/dog-wake.svg"]
+};
+let dogFrameTimer = null;
+let dogFrameIndex = 0;
+
+function playDogFrames(stateName) {
+  clearInterval(dogFrameTimer);
+  dogFrameIndex = 0;
+  const frames = DOG_FRAMES[stateName] || DOG_FRAMES.idle;
+  const render = () => {
+    dog.style.setProperty("--dog-frame", `url("${frames[dogFrameIndex % frames.length]}")`);
+    dogFrameIndex += 1;
+  };
+  render();
+  if (frames.length > 1) {
+    const speed = stateName === "walk" ? 145 : stateName === "happy" || stateName === "greet" ? 260 : 420;
+    dogFrameTimer = setInterval(render, speed);
+  }
+}
+
 function setDogState(stateName, duration = 1800) {
   const safeState = DOG_STATES.includes(stateName) ? stateName : "idle";
   dog.classList.remove(...DOG_STATES);
   dog.classList.add(safeState);
+  playDogFrames(safeState);
   clearTimeout(attentionTimer);
   if (safeState !== "idle" && duration > 0) {
     attentionTimer = setTimeout(() => setDogState("idle", 0), duration);
