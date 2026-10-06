@@ -29,7 +29,10 @@ function createPet() {
     }
   });
 
-  petWindow.setAlwaysOnTop(true, "floating");
+  petWindow.setAlwaysOnTop(true, "screen-saver");
+  // Keep the pet visible across macOS Spaces and fullscreen apps.
+  petWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+  petWindow.setFullScreenable(false);
   petWindow.loadFile(path.join(__dirname, "renderer", "index.html"));
   petWindow.on("closed", () => { petWindow = null; });
 }
