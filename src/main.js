@@ -1,6 +1,7 @@
 const { app, BrowserWindow, Tray, Menu, nativeImage, screen, ipcMain } = require("electron");
 const os = require("os");
 const path = require("path");
+const { execFile } = require("child_process");
 
 let petWindow;
 let tray;
@@ -58,6 +59,17 @@ ipcMain.handle("system-info", () => ({
   memoryFreeGB: +(os.freemem() / 1024 ** 3).toFixed(1),
   uptimeMinutes: Math.floor(os.uptime() / 60)
 }));
+
+ipcMain.handle("system-idle-seconds", async () => {
+  if (process.platform !== "darwin") return 0;
+  return new Promise((resolve) => {
+    execFile("/usr/sbin/ioreg", ["-c", "IOHIDSystem", "-d", "4"], { timeout: 1500 }, (error, stdout) => {
+      if (error) return resolve(0);
+      const match = stdout.match(/"HIDIdleTime"\s*=\s*([0-9]+)/);
+      resolve(match ? Math.floor(Number(match[1]) / 1e9) : 0);
+    });
+  });
+});
 
 ipcMain.on("move-pet", (_event, position) => {
   if (!petWindow || petWindow.isDestroyed()) return;
