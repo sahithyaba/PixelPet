@@ -23,8 +23,8 @@ function activePet() { return dog; }
 function mood(name) {
   const pet = activePet();
   pet.classList.remove("happy", "sleep", "walk", "sit", "greet", "pat", "bored", "angry", "confront", "curious", "look", "sniff", "stretch", "lie", "wake");
-  if (name === "sleepy") pet.classList.add("sleep");
-  if (name === "happy") pet.classList.add("happy");
+  if (name === "sleepy") { pet.classList.add("sleep"); setDogState("sleep", 0); }
+  if (name === "happy") { pet.classList.add("happy"); setDogState("happy", 1800); }
   state.mood = name;
   save();
 }
@@ -249,7 +249,7 @@ let systemIdleSeconds = 0;
 const IDLE_TO_WANDER = 5 * 60;
 let waterReminderTimer = null;
 
-const DOG_STATES = ["idle","walk","happy","curious","sit","greet","pat","bored","angry","confront","look","sniff","stretch","lie","wake","touch-look","touch-happy","touch-wag"];
+const DOG_STATES = ["idle","walk","happy","curious","sit","greet","pat","bored","angry","confront","look","sniff","stretch","lie","sleep","wake","touch-look","touch-happy","touch-wag"];
 
 const DOG_FRAMES = {
   idle: ["./assets/dog-idle.svg"],
