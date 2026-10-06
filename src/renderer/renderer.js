@@ -427,6 +427,13 @@ startWaterReminder();
 function touchReaction(type, message) {
   petReact(type);
   showBubbleMessage(message);
+  if (type === "touch-look") {
+    setTimeout(() => setDogState("look", 700), 650);
+  } else if (type === "touch-happy") {
+    setTimeout(() => setDogState("greet", 900), 600);
+  } else if (type === "touch-wag") {
+    setTimeout(() => setDogState("look", 700), 650);
+  }
 }
 
 document.querySelectorAll(".touch-eye").forEach((eye) => {
@@ -443,7 +450,7 @@ document.querySelector(".touch-collar")?.addEventListener("click", (event) => {
   event.stopPropagation();
   touchReaction("touch-happy", "💜 You touched my collar!");
 });
-document.querySelector(".touch-tail")?.addEventListener("click", (event) => {
+document.querySelectorAll(".touch-tail").forEach((tail) => tail.addEventListener("click", (event) => {
   event.stopPropagation();
-  touchReaction("touch-wag", "🐕 My tail!");
-});
+  touchReaction("touch-wag", "🐕 My tail! *wag wag*");
+}));
