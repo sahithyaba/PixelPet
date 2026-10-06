@@ -22,7 +22,7 @@ function activePet() { return dog; }
 
 function mood(name) {
   const pet = activePet();
-  pet.classList.remove("happy", "sleep", "walk", "sit", "greet", "pat", "bored", "angry", "confront", "curious");
+  pet.classList.remove("happy", "sleep", "walk", "sit", "greet", "pat", "bored", "angry", "confront", "curious", "look", "sniff", "stretch", "lie", "wake");
   if (name === "sleepy") pet.classList.add("sleep");
   if (name === "happy") pet.classList.add("happy");
   state.mood = name;
@@ -208,6 +208,10 @@ form.addEventListener("submit", (event) => {
   command(value);
 });
 
+dog.addEventListener("mousemove", () => {
+  if (Math.random() < 0.025) lookAtCursor();
+});
+
 dog.addEventListener("click", () => {
   interactWithPet();
   input.focus();
@@ -249,6 +253,17 @@ function petReact(type) {
   }, type === "happy" || type === "pat" ? 1400 : 2200);
 }
 
+function dogLifeBehavior() {
+  if (state.mood === "sleepy" || walking) return;
+  const roll = Math.random();
+  if (roll < 0.18) petReact("look");
+  else if (roll < 0.34) petReact("sniff");
+  else if (roll < 0.45) petReact("stretch");
+  else if (roll < 0.53) petReact("greet");
+  else if (roll < 0.62) petReact("bored");
+  else if (roll < 0.68) petReact("sit");
+}
+
 function randomBehavior() {
   if (state.mood === "sleepy" || walking) return;
 
@@ -262,16 +277,17 @@ function randomBehavior() {
   } else if (roll < 0.54) {
     petReact("sit");
   } else if (roll < 0.65) {
-    petReact("sleep");
+    petReact("lie");
     setTimeout(() => {
-      if (state.mood !== "sleepy") petReact("idle");
-    }, 1800);
+      if (state.mood !== "sleepy") petReact("wake");
+    }, 2600);
   }
 }
 
 function scheduleRandomBehavior() {
   clearTimeout(interactionTimer);
   interactionTimer = setTimeout(() => {
+    dogLifeBehavior();
     randomBehavior();
     scheduleRandomBehavior();
   }, 3500 + Math.random() * 7000);
@@ -281,8 +297,13 @@ function maybePlaySoundlessReaction() {
   if (Math.random() < 0.35) showBubbleMessage("🐶 *happy tail wagging*");
 }
 
+function lookAtCursor() {
+  if (state.mood === "sleepy" || walking) return;
+  petReact("look");
+}
+
 function interactWithPet() {
-  const responses = ["🐶 Woof!","🐾 Tail wag!","❤️ Belly rub accepted.","🎾 Play with me!","👀 Who's there?"];
+  const responses = ["🐶 Woof!","🐾 Tail wag!","❤️ Belly rub accepted.","🎾 Play with me!","👀 Who's there?","🐕 *happy wiggle*"];
   petReact("pat");
   showBubbleMessage(responses[Math.floor(Math.random() * responses.length)]);
 }
