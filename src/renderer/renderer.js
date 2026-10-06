@@ -45,7 +45,11 @@ function help() {
     "• greet",
     "• sit",
     "• walk",
-    "• bored"
+    "• bored",
+    "• sniff",
+    "• stretch",
+    "• lie",
+    "• look"
   ].join("\n");
 }
 
@@ -116,7 +120,7 @@ async function command(raw) {
     return;
   }
 
-  if (["pat","greet","sit","walk","bored","angry","confront"].includes(text)) {
+  if (["pat","greet","sit","walk","bored","angry","confront","sniff","stretch","lie","look"].includes(text)) {
     petReact(text);
     const lines = {
       pat: "🐾 Tail wag! That feels good.",
@@ -125,7 +129,11 @@ async function command(raw) {
       walk: "🐾 Let's go!",
       bored: "😐 I'm bored... entertain me!",
       angry: "😤 Hey! What's going on?",
-      confront: "🐶 Excuse me. We need to talk."
+      confront: "🐶 Excuse me. We need to talk.",
+      sniff: "🐶 *sniff sniff*",
+      stretch: "🐶 *big stretch*",
+      lie: "🐶 Time for a little rest.",
+      look: "🐶 Hmm? Did you call me?"
     };
     addMessage(lines[text]);
     return;
