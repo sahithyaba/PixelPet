@@ -58,6 +58,17 @@ ipcMain.handle("system-info", () => ({
   uptimeMinutes: Math.floor(os.uptime() / 60)
 }));
 
+ipcMain.on("move-pet", (_event, position) => {
+  if (!petWindow || petWindow.isDestroyed()) return;
+  const display = screen.getDisplayNearestPoint(screen.getCursorScreenPoint());
+  const bounds = display.workArea;
+  const maxX = bounds.x + bounds.width - 340;
+  const maxY = bounds.y + bounds.height - 330;
+  const x = Math.max(bounds.x + 10, Math.min(Number(position.x) || bounds.x + 10, maxX));
+  const y = Math.max(bounds.y + 10, Math.min(Number(position.y) || bounds.y + 10, maxY));
+  petWindow.setPosition(Math.round(x), Math.round(y), false);
+});
+
 ipcMain.on("quit-app", () => app.quit());
 
 app.whenReady().then(() => {
