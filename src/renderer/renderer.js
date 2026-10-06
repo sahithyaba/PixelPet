@@ -22,7 +22,7 @@ function activePet() { return dog; }
 
 function mood(name) {
   const pet = activePet();
-  pet.classList.remove("happy", "sleep", "walk");
+  pet.classList.remove("happy", "sleep", "walk", "sit", "greet", "pat", "bored", "angry", "confront", "curious");
   if (name === "sleepy") pet.classList.add("sleep");
   if (name === "happy") pet.classList.add("happy");
   state.mood = name;
@@ -107,12 +107,27 @@ async function command(raw) {
 
   if (text === "hello" || text === "hi" || text === "hey") {
     mood("happy");
-    addMessage("Meow! I'm PixelPet. 🐾 No AI needed — I'm powered by local commands.");
+    addMessage("Woof! I'm PixelPet. 🐶 No AI needed — I live locally on your Mac.");
     return;
   }
 
     if (text === "who are you") {
     addMessage("I'm your tiny desktop coworker. I live locally on your Mac.");
+    return;
+  }
+
+  if (["pat","greet","sit","walk","bored","angry","confront"].includes(text)) {
+    petReact(text);
+    const lines = {
+      pat: "🐾 Tail wag! That feels good.",
+      greet: "🐶 Hello! *tail wagging*",
+      sit: "🐶 Sitting nicely.",
+      walk: "🐾 Let's go!",
+      bored: "😐 I'm bored... entertain me!",
+      angry: "😤 Hey! What's going on?",
+      confront: "🐶 Excuse me. We need to talk."
+    };
+    addMessage(lines[text]);
     return;
   }
 
@@ -193,22 +208,6 @@ form.addEventListener("submit", (event) => {
   command(value);
 });
 
-cat.addEventListener("mouseenter", () => {
-  if (state.mood !== "sleepy") cat.classList.add("walk");
-});
-
-cat.addEventListener("mouseleave", () => cat.classList.remove("walk"));
-
-dog.addEventListener("mouseenter", () => { if (state.mood !== "sleepy") dog.classList.add("walk"); });
-dog.addEventListener("mouseleave", () => dog.classList.remove("walk"));
-
-
-
-cat.addEventListener("click", () => {
-  interactWithPet();
-  input.focus();
-});
-
 dog.addEventListener("click", () => {
   interactWithPet();
   input.focus();
@@ -221,7 +220,6 @@ document.addEventListener("mousemove", (event) => {
 });
 
 setInterval(checkReminders, 1000);
-setPet("dog");
 
 setTimeout(() => {
   addMessage("Hi! I'm PixelPet. 🐾");
@@ -280,11 +278,7 @@ function scheduleRandomBehavior() {
 }
 
 function maybePlaySoundlessReaction() {
-  if (true && Math.random() < 0.35) {
-    showBubbleMessage("🐶 *happy tail wagging*");
-  } else if (state.pet === "cat" && Math.random() < 0.35) {
-    showBubbleMessage("🐱 *purrs softly*");
-  }
+  if (Math.random() < 0.35) showBubbleMessage("🐶 *happy tail wagging*");
 }
 
 function interactWithPet() {
@@ -299,7 +293,7 @@ function walkTo(x, y, duration) {
   pet.classList.remove("idle", "sleep", "happy");
   pet.classList.add("walk");
   walking = true;
-  window.pixelPet.movePet(Math.round(x), Math.round(y));
+  window.pixelPet.movePet(Math.round(x), Math.round(y), duration);
   setTimeout(() => {
     walking = false;
     pet.classList.remove("walk");
