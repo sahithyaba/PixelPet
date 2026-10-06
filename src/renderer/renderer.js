@@ -233,3 +233,43 @@ setTimeout(() => {
   addMessage("Hi! I'm PixelPet. 🐾");
   addMessage("Everything here runs locally. Type 'help' to try me.");
 }, 700);
+
+
+/* Autonomous desktop-pet behavior */
+let wanderTimer = null;
+let wanderActive = true;
+let walking = false;
+
+function walkTo(x, y, duration) {
+  if (!window.pixelPet?.movePet) return;
+  const pet = activePet();
+  pet.classList.remove("idle", "sleep", "happy");
+  pet.classList.add("walk");
+  walking = true;
+  window.pixelPet.movePet(Math.round(x), Math.round(y));
+  setTimeout(() => {
+    walking = false;
+    pet.classList.remove("walk");
+    pet.classList.add("idle");
+  }, duration);
+}
+
+function scheduleWander() {
+  clearTimeout(wanderTimer);
+  if (!wanderActive || state.mood === "sleepy") {
+    wanderTimer = setTimeout(scheduleWander, 5000);
+    return;
+  }
+
+  const margin = 35;
+  const maxX = Math.max(margin, window.screen.availWidth - 390);
+  const maxY = Math.max(margin, window.screen.availHeight - 390);
+  const x = margin + Math.random() * Math.max(1, maxX - margin);
+  const y = margin + Math.random() * Math.max(1, maxY - margin);
+  const duration = 900 + Math.floor(Math.random() * 1400);
+
+  walkTo(x, y, duration);
+  wanderTimer = setTimeout(scheduleWander, duration + 2500 + Math.random() * 3500);
+}
+
+setTimeout(scheduleWander, 3000);
