@@ -16,3 +16,6 @@
 .dog-leg.back{left:59px}.dog-leg.front{left:123px}.dog-paw{top:158px;width:34px;height:18px;background:#7a472d;border:4px solid #3a2b25;border-radius:50%}.dog-paw.back{left:52px}.dog-paw.front{left:116px}
 .dog-tail{left:142px;top:105px;width:70px;height:48px;border:8px solid #6f4129;border-left:0;border-radius:0 50px 50px 0;transform:rotate(-28deg);transform-origin:left center;z-index:-1}
 .dog.idle{animation:idle 1.8s ease-in-out infinite}.dog.walk{animation:walk .34s ease-in-out infinite}.dog.happy{animation:happy .25s ease-in-out infinite}.dog.sleep{animation:sleep 2s ease-in-out infinite}
+
+.character.sit{animation:sit 1.2s ease-in-out infinite}.character.curious{animation:curious 1.1s ease-in-out infinite}.character.happy{animation:happy .25s ease-in-out infinite}.character.sleep{animation:sleep 2s ease-in-out infinite}
+@keyframes sit{0%,100%{transform:translateY(0) scaleY(1)}50%{transform:translateY(4px) scaleY(.92)}}@keyframes curious{0%,100%{transform:rotate(0)}30%{transform:rotate(-8deg) translateY(-2px)}70%{transform:rotate(8deg) translateY(-2px)}}
