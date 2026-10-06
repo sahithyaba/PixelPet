@@ -1,4 +1,5 @@
-const cat = document.getElementById("cat");
+const cat = document.getElementById("pet-character");
+const dog = document.getElementById("dog");
 const messages = document.getElementById("messages");
 const input = document.getElementById("command-input");
 const form = document.getElementById("command-form");
@@ -18,10 +19,19 @@ function addMessage(text, type = "pet") {
   messages.scrollTop = messages.scrollHeight;
 }
 
+function setPet(kind) {
+  state.pet = kind === "dog" ? "dog" : "cat";
+  cat.classList.toggle("hidden", state.pet === "dog");
+  dog.classList.toggle("hidden", state.pet !== "dog");
+  save();
+}
+function activePet() { return state.pet === "dog" ? dog : cat; }
+
 function mood(name) {
-  cat.classList.remove("happy", "sleep", "walk");
-  if (name === "sleepy") cat.classList.add("sleep");
-  if (name === "happy") cat.classList.add("happy");
+  const pet = activePet();
+  pet.classList.remove("happy", "sleep", "walk");
+  if (name === "sleepy") pet.classList.add("sleep");
+  if (name === "happy") pet.classList.add("happy");
   state.mood = name;
   save();
 }
@@ -37,7 +47,9 @@ function help() {
     "• battery",
     "• memory",
     "• focus",
-    "• sleep"
+    "• sleep",
+    "• cat",
+    "• dog"
   ].join("\n");
 }
 
@@ -78,7 +90,9 @@ function runTimer(minutes) {
   mood("happy");
   addMessage(`⏱️ Focus timer started for ${minutes} minutes.`);
 
-  setTimeout(() => {
+  setPet(state.pet || "cat");
+
+setTimeout(() => {
     mood("happy");
     addMessage("🎉 Time's up! Nice work.");
   }, ms);
@@ -100,6 +114,20 @@ async function command(raw) {
   if (text === "hello" || text === "hi" || text === "hey") {
     mood("happy");
     addMessage("Meow! I'm PixelPet. 🐾 No AI needed — I'm powered by local commands.");
+    return;
+  }
+
+  if (text === "cat") {
+    setPet("cat");
+    mood("happy");
+    addMessage("🐱 Cat mode on.");
+    return;
+  }
+
+  if (text === "dog") {
+    setPet("dog");
+    mood("happy");
+    addMessage("🐶 Dog mode on.");
     return;
   }
 
@@ -190,6 +218,11 @@ cat.addEventListener("mouseenter", () => {
 });
 
 cat.addEventListener("mouseleave", () => cat.classList.remove("walk"));
+
+dog.addEventListener("mouseenter", () => { if (state.mood !== "sleepy") dog.classList.add("walk"); });
+dog.addEventListener("mouseleave", () => dog.classList.remove("walk"));
+
+dog.addEventListener("click", () => { input.focus(); });
 
 cat.addEventListener("click", () => {
   input.focus();
