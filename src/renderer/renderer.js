@@ -1,4 +1,3 @@
-const cat = document.getElementById("pet-character");
 const dog = document.getElementById("dog");
 const messages = document.getElementById("messages");
 const input = document.getElementById("command-input");
@@ -19,13 +18,7 @@ function addMessage(text, type = "pet") {
   messages.scrollTop = messages.scrollHeight;
 }
 
-function setPet(kind) {
-  state.pet = kind === "dog" ? "dog" : "cat";
-  cat.classList.toggle("hidden", state.pet === "dog");
-  dog.classList.toggle("hidden", state.pet !== "dog");
-  save();
-}
-function activePet() { return state.pet === "dog" ? dog : cat; }
+function activePet() { return dog; }
 
 function mood(name) {
   const pet = activePet();
@@ -48,8 +41,11 @@ function help() {
     "• memory",
     "• focus",
     "• sleep",
-    "• cat",
-    "• dog"
+    "• pat",
+    "• greet",
+    "• sit",
+    "• walk",
+    "• bored"
   ].join("\n");
 }
 
@@ -115,21 +111,7 @@ async function command(raw) {
     return;
   }
 
-  if (text === "cat") {
-    setPet("cat");
-    mood("happy");
-    addMessage("🐱 Cat mode on.");
-    return;
-  }
-
-  if (text === "dog") {
-    setPet("dog");
-    mood("happy");
-    addMessage("🐶 Dog mode on.");
-    return;
-  }
-
-  if (text === "who are you") {
+    if (text === "who are you") {
     addMessage("I'm your tiny desktop coworker. I live locally on your Mac.");
     return;
   }
@@ -220,7 +202,7 @@ cat.addEventListener("mouseleave", () => cat.classList.remove("walk"));
 dog.addEventListener("mouseenter", () => { if (state.mood !== "sleepy") dog.classList.add("walk"); });
 dog.addEventListener("mouseleave", () => dog.classList.remove("walk"));
 
-dog.addEventListener("click", () => { input.focus(); });
+
 
 cat.addEventListener("click", () => {
   interactWithPet();
@@ -239,7 +221,7 @@ document.addEventListener("mousemove", (event) => {
 });
 
 setInterval(checkReminders, 1000);
-setPet(state.pet || "cat");
+setPet("dog");
 
 setTimeout(() => {
   addMessage("Hi! I'm PixelPet. 🐾");
@@ -259,14 +241,14 @@ function showBubbleMessage(text) {
 }
 
 function petReact(type) {
-  const pet = activePet();
-  pet.classList.remove("happy", "curious", "sleep", "walk");
+  const pet = dog;
+  pet.classList.remove("idle","happy","curious","sleep","walk","sit","greet","pat","bored","angry","confront");
   pet.classList.add(type);
   clearTimeout(attentionTimer);
   attentionTimer = setTimeout(() => {
     pet.classList.remove(type);
     pet.classList.add("idle");
-  }, type === "happy" ? 1400 : 2200);
+  }, type === "happy" || type === "pat" ? 1400 : 2200);
 }
 
 function randomBehavior() {
@@ -298,7 +280,7 @@ function scheduleRandomBehavior() {
 }
 
 function maybePlaySoundlessReaction() {
-  if (state.pet === "dog" && Math.random() < 0.35) {
+  if (true && Math.random() < 0.35) {
     showBubbleMessage("🐶 *happy tail wagging*");
   } else if (state.pet === "cat" && Math.random() < 0.35) {
     showBubbleMessage("🐱 *purrs softly*");
@@ -306,13 +288,9 @@ function maybePlaySoundlessReaction() {
 }
 
 function interactWithPet() {
-  const responses = state.pet === "dog"
-    ? ["🐶 Woof! Good human.", "🐾 Tail wag!", "❤️ Belly rub accepted.", "🎾 Play with me!"]
-    : ["🐱 Meow! Head scratches!", "🐾 Purrrr...", "❤️ I like that.", "🧶 Play time!"];
-
-  petReact("happy");
+  const responses = ["🐶 Woof!","🐾 Tail wag!","❤️ Belly rub accepted.","🎾 Play with me!","👀 Who's there?"];
+  petReact("pat");
   showBubbleMessage(responses[Math.floor(Math.random() * responses.length)]);
-  maybePlaySoundlessReaction();
 }
 
 function walkTo(x, y, duration) {
