@@ -63,7 +63,7 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:transparent
 .dog.touch-look .head{animation:lookHead .35s ease-in-out 3}.dog.touch-look .ear-left,.dog.touch-look .ear-right{animation:lookEar .35s ease-in-out 3}
 .dog.touch-happy .tail{animation:tailHappy .12s ease-in-out infinite alternate}.dog.touch-happy .tongue{display:block}
 
-.dog{background:transparent!important}.dog-art{position:absolute;inset:-45px -70px -55px -70px;background:var(--dog-frame,url("./assets/dog-idle.svg")) center/contain no-repeat;pointer-events:none;transition:transform .25s ease,filter .25s ease}
+.dog{background:transparent!important}.dog-art{position:absolute;inset:-45px -70px -55px -70px;background-image:var(--dog-frame-url,url("./assets/dog-atlas.svg")),url("./assets/dog-idle.svg");background-size:400% 300%,contain;background-position:var(--dog-pos-x,0%) var(--dog-pos-y,0%),center;background-repeat:no-repeat;pointer-events:none;transition:transform .25s ease,filter .25s ease}
 .dog>*:not(.dog-art):not(.hotspot){display:none!important}
 .hotspot{position:absolute;border:0;background:transparent;padding:0;margin:0;z-index:20;cursor:pointer;-webkit-app-region:no-drag}
 .eye-zone{left:61px;top:72px;width:90px;height:58px}.nose-zone{left:96px;top:113px;width:48px;height:35px}.collar-zone{left:72px;top:166px;width:100px;height:38px}.tail-zone{right:-8px;top:118px;width:80px;height:85px}
