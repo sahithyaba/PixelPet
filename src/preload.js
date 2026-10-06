@@ -3,5 +3,6 @@ const { contextBridge, ipcRenderer } = require("electron");
 contextBridge.exposeInMainWorld("pixelPet", {
   platform: process.platform,
   quit: () => ipcRenderer.send("quit-app"),
-  getSystemInfo: () => ipcRenderer.invoke("system-info")
+  getSystemInfo: () => ipcRenderer.invoke("system-info"),
+  movePet: (x, y) => ipcRenderer.send("move-pet", { x, y })
 });
