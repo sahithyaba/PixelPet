@@ -43,3 +43,16 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:transparent
 @keyframes sniffTail{50%{transform:rotate(-8deg)}}@keyframes stretchBody{0%,100%{transform:scaleY(1)}45%{transform:scaleY(.86) translateY(12px)}}
 @keyframes stretchHead{45%{transform:translateY(14px) rotate(4deg)}}@keyframes lieDown{to{transform:translateY(20px) scaleY(.72)}}@keyframes lieHead{to{transform:translateY(23px) rotate(-5deg)}}
 @keyframes wakeUp{0%{transform:translateY(20px) scaleY(.72)}60%{transform:translateY(-5px) scaleY(1.04)}100%{transform:translateY(0) scaleY(1)}}@keyframes earWake{50%{transform:translateY(-6px) rotate(0)}}@keyframes earGreet{from{transform:rotate(12deg)}to{transform:rotate(25deg)}}
+
+/* State-specific body motion */
+.dog.walk .leg-back{animation:legBack .28s ease-in-out infinite alternate}.dog.walk .leg-front{animation:legFront .28s ease-in-out infinite alternate}
+.dog.walk .tail{animation:walkTail .28s ease-in-out infinite alternate}
+.dog.happy .tail{animation:tailHappy .12s ease-in-out infinite alternate}.dog.happy .ear-left{animation:earHappyLeft .28s ease-in-out infinite alternate}.dog.happy .ear-right{animation:earHappyRight .28s ease-in-out infinite alternate}
+.dog.sniff .ear-left,.dog.sniff .ear-right{animation:sniffEar .42s ease-in-out infinite alternate}
+.dog.look .ear-left,.dog.look .ear-right{animation:lookEar .7s ease-in-out infinite alternate}
+.dog.bored .tail{animation:boredTail 2.4s ease-in-out infinite}.dog.lie .tail{animation:lieTail 1.2s ease-in-out infinite alternate}
+@keyframes legBack{from{transform:rotate(10deg)}to{transform:rotate(-13deg)}}@keyframes legFront{from{transform:rotate(-13deg)}to{transform:rotate(10deg)}}
+@keyframes walkTail{from{transform:rotate(-25deg)}to{transform:rotate(-5deg)}}@keyframes tailHappy{from{transform:rotate(-48deg)}to{transform:rotate(34deg)}}
+@keyframes earHappyLeft{from{transform:rotate(8deg)}to{transform:rotate(30deg)}}@keyframes earHappyRight{from{transform:rotate(-8deg)}to{transform:rotate(-30deg)}}
+@keyframes sniffEar{from{transform:rotate(18deg)}to{transform:rotate(7deg)}}@keyframes lookEar{from{transform:rotate(18deg)}to{transform:rotate(2deg)}}
+@keyframes boredTail{50%{transform:rotate(-10deg)}}@keyframes lieTail{from{transform:rotate(-27deg)}to{transform:rotate(-8deg)}}
