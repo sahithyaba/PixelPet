@@ -26,3 +26,20 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:transparent
 .tag{left:94px;top:98px;width:19px;height:19px;background:#f4c84a;border:2px solid #7d5b13;border-radius:50%;z-index:8;font-size:10px;text-align:center;line-height:15px;font-weight:700;color:#5a4310}
 .dog.idle{animation:idle 2.1s ease-in-out infinite}.dog.walk{animation:walk .32s ease-in-out infinite}.dog.happy{animation:happy .24s ease-in-out infinite}.dog.sleep{animation:sleep 2.2s ease-in-out infinite}.dog.sit{animation:sit 1.3s ease-in-out infinite}.dog.curious{animation:curious 1.1s ease-in-out infinite}.dog.greet .tail{animation:wag .16s ease-in-out infinite alternate}.dog.greet .tongue{display:block}.dog.pat{animation:pat .45s ease-in-out 2}.dog.bored{animation:bored 3s ease-in-out infinite}.dog.angry{animation:angry .18s ease-in-out infinite}.dog.confront{animation:confront .7s ease-in-out infinite}
 @keyframes idle{50%{transform:translateY(-4px)}}@keyframes walk{50%{transform:translateY(-9px) rotate(-2deg)}}@keyframes happy{50%{transform:translateY(-15px) rotate(-4deg)}}@keyframes sleep{50%{transform:translateY(4px) scaleY(.97)}}@keyframes sit{50%{transform:translateY(5px) scaleY(.91)}}@keyframes curious{30%{transform:rotate(-7deg) translateY(-2px)}70%{transform:rotate(7deg) translateY(-2px)}}@keyframes wag{from{transform:rotate(-42deg)}to{transform:rotate(28deg)}}@keyframes pat{50%{transform:translateY(-6px) rotate(3deg)}}@keyframes bored{50%{transform:translateY(3px) rotate(-2deg)}}@keyframes angry{50%{transform:translateX(-3px)}}@keyframes confront{50%{transform:translateX(-16px)}}@keyframes shadow{50%{transform:scaleX(.85);opacity:.1}}
+
+/* Lively dog micro-animations */
+.dog.idle .ear-left{animation:earIdleLeft 3.8s ease-in-out infinite}.dog.idle .ear-right{animation:earIdleRight 4.2s ease-in-out infinite}
+.dog.idle .tail{animation:tailIdle 2.8s ease-in-out infinite alternate}
+.dog.look{animation:lookBody .7s ease-in-out}.dog.look .head{animation:lookHead .7s ease-in-out}
+.dog.sniff .head{animation:sniffHead .42s ease-in-out 4}.dog.sniff .nose{animation:sniffNose .21s ease-in-out 8}
+.dog.sniff .tail{animation:sniffTail 1.7s ease-in-out infinite}
+.dog.stretch{animation:stretchBody 1.8s ease-in-out}.dog.stretch .head{animation:stretchHead 1.8s ease-in-out}
+.dog.lie{animation:lieDown 1.2s ease-in-out forwards}.dog.lie .head{animation:lieHead 1.2s ease-in-out forwards}
+.dog.wake{animation:wakeUp 1.2s ease-in-out}.dog.wake .ear-left,.dog.wake .ear-right{animation:earWake 1.2s ease-in-out}
+.dog.greet .ear-left,.dog.greet .ear-right{animation:earGreet .35s ease-in-out infinite alternate}
+@keyframes earIdleLeft{0%,100%{transform:rotate(18deg)}50%{transform:rotate(25deg) translateY(2px)}}@keyframes earIdleRight{0%,100%{transform:rotate(-18deg)}50%{transform:rotate(-25deg) translateY(2px)}}
+@keyframes tailIdle{0%{transform:rotate(-27deg)}100%{transform:rotate(-13deg)}}@keyframes tailGreet{from{transform:rotate(-45deg)}to{transform:rotate(30deg)}}
+@keyframes lookBody{50%{transform:translateX(-3px) rotate(-2deg)}}@keyframes lookHead{50%{transform:translateX(-7px) rotate(-5deg)}}@keyframes sniffHead{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}@keyframes sniffNose{50%{transform:scale(1.12)}}
+@keyframes sniffTail{50%{transform:rotate(-8deg)}}@keyframes stretchBody{0%,100%{transform:scaleY(1)}45%{transform:scaleY(.86) translateY(12px)}}
+@keyframes stretchHead{45%{transform:translateY(14px) rotate(4deg)}}@keyframes lieDown{to{transform:translateY(20px) scaleY(.72)}}@keyframes lieHead{to{transform:translateY(23px) rotate(-5deg)}}
+@keyframes wakeUp{0%{transform:translateY(20px) scaleY(.72)}60%{transform:translateY(-5px) scaleY(1.04)}100%{transform:translateY(0) scaleY(1)}}@keyframes earWake{50%{transform:translateY(-6px) rotate(0)}}@keyframes earGreet{from{transform:rotate(12deg)}to{transform:rotate(25deg)}}
