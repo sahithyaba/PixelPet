@@ -90,9 +90,7 @@ function runTimer(minutes) {
   mood("happy");
   addMessage(`⏱️ Focus timer started for ${minutes} minutes.`);
 
-  setPet(state.pet || "cat");
-
-setTimeout(() => {
+  setTimeout(() => {
     mood("happy");
     addMessage("🎉 Time's up! Nice work.");
   }, ms);
@@ -229,6 +227,8 @@ cat.addEventListener("click", () => {
 });
 
 setInterval(checkReminders, 1000);
+setPet(state.pet || "cat");
+
 setTimeout(() => {
   addMessage("Hi! I'm PixelPet. 🐾");
   addMessage("Everything here runs locally. Type 'help' to try me.");
