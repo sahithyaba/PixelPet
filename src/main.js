@@ -4,6 +4,7 @@ const path = require("path");
 
 let petWindow;
 let tray;
+let movementTimer;
 
 function createPet() {
   const display = screen.getPrimaryDisplay();
@@ -60,13 +61,23 @@ ipcMain.handle("system-info", () => ({
 
 ipcMain.on("move-pet", (_event, position) => {
   if (!petWindow || petWindow.isDestroyed()) return;
-  const display = screen.getDisplayNearestPoint(screen.getCursorScreenPoint());
+  clearInterval(movementTimer);
+  const current = petWindow.getPosition();
+  const display = screen.getDisplayNearestPoint({ x: current[0], y: current[1] });
   const bounds = display.workArea;
-  const maxX = bounds.x + bounds.width - 340;
-  const maxY = bounds.y + bounds.height - 330;
-  const x = Math.max(bounds.x + 10, Math.min(Number(position.x) || bounds.x + 10, maxX));
-  const y = Math.max(bounds.y + 10, Math.min(Number(position.y) || bounds.y + 10, maxY));
-  petWindow.setPosition(Math.round(x), Math.round(y), false);
+  const targetX = Math.max(bounds.x + 10, Math.min(Number(position.x) || bounds.x + 10, bounds.x + bounds.width - 340));
+  const targetY = Math.max(bounds.y + 10, Math.min(Number(position.y) || bounds.y + 10, bounds.y + bounds.height - 330));
+  const startX = current[0];
+  const startY = current[1];
+  const duration = Math.max(400, Math.min(Number(position.duration) || 1200, 4000));
+  const started = Date.now();
+  movementTimer = setInterval(() => {
+    if (!petWindow || petWindow.isDestroyed()) return clearInterval(movementTimer);
+    const progress = Math.min(1, (Date.now() - started) / duration);
+    const eased = progress < 0.5 ? 2 * progress * progress : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+    petWindow.setPosition(Math.round(startX + (targetX - startX) * eased), Math.round(startY + (targetY - startY) * eased), false);
+    if (progress >= 1) clearInterval(movementTimer);
+  }, 16);
 });
 
 ipcMain.on("quit-app", () => app.quit());
