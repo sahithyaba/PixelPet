@@ -17,12 +17,62 @@ html, body {
   -webkit-app-region: drag;
 }
 
+.bubble {
+  position: absolute;
+  right: 12px;
+  bottom: 130px;
+  width: 280px;
+  min-height: 100px;
+  padding: 12px;
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 18px;
+  background: rgba(255,255,255,.97);
+  color: #292323;
+  box-shadow: 0 12px 35px rgba(0,0,0,.18);
+  -webkit-app-region: no-drag;
+}
+
+.bubble::after {
+  content: "";
+  position: absolute;
+  right: 45px;
+  bottom: -8px;
+  width: 16px;
+  height: 16px;
+  background: white;
+  transform: rotate(45deg);
+}
+
+#messages {
+  max-height: 125px;
+  overflow-y: auto;
+  font-size: 13px;
+  line-height: 1.4;
+  margin-bottom: 9px;
+}
+
+.message { margin: 4px 0; }
+.message.user { color: #7563d8; text-align: right; }
+.message.pet { color: #292323; }
+
+#command-form { position: relative; z-index: 2; }
+
+#command-input {
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 11px;
+  padding: 8px 10px;
+  outline: none;
+  font: inherit;
+  background: #fafafa;
+}
+
 .cat {
   position: absolute;
-  right: 18px;
-  bottom: 18px;
-  width: 96px;
-  height: 112px;
+  right: 25px;
+  bottom: 20px;
+  width: 105px;
+  height: 118px;
   cursor: grab;
   image-rendering: pixelated;
   filter: drop-shadow(0 8px 5px rgba(0,0,0,.16));
@@ -31,98 +81,86 @@ html, body {
 
 .cat:active { cursor: grabbing; }
 
-.face, .body, .ear, .tail {
+.face, .body, .ear, .tail, .paw {
   position: absolute;
   background: #f4a261;
   border: 4px solid #352b2b;
 }
 
 .face {
-  left: 17px;
+  left: 18px;
   top: 10px;
-  width: 62px;
-  height: 55px;
+  width: 68px;
+  height: 58px;
   border-radius: 12px;
 }
 
 .ear {
-  width: 24px;
-  height: 27px;
+  width: 26px;
+  height: 28px;
   top: 0;
   z-index: -1;
   transform: rotate(45deg);
   border-radius: 4px;
 }
-
-.ear.left { left: 17px; }
-.ear.right { right: 17px; }
+.ear.left { left: 18px; }
+.ear.right { right: 18px; }
 
 .eye {
   position: absolute;
-  top: 20px;
+  top: 21px;
   width: 7px;
   height: 7px;
   background: #352b2b;
 }
-
-.left-eye { left: 14px; }
-.right-eye { right: 14px; }
+.left-eye { left: 15px; }
+.right-eye { right: 15px; }
 
 .nose {
   position: absolute;
-  left: 25px;
-  top: 31px;
+  left: 28px;
+  top: 32px;
   width: 8px;
   height: 6px;
   background: #d95d6a;
 }
 
+.mouth {
+  position: absolute;
+  left: 29px;
+  top: 39px;
+  width: 9px;
+  height: 4px;
+  border-bottom: 2px solid #352b2b;
+}
+
 .body {
-  left: 25px;
-  top: 62px;
-  width: 47px;
-  height: 39px;
+  left: 27px;
+  top: 65px;
+  width: 51px;
+  height: 42px;
   border-radius: 12px 12px 8px 8px;
 }
 
 .tail {
-  right: 4px;
-  top: 67px;
-  width: 25px;
-  height: 42px;
+  right: 3px;
+  top: 69px;
+  width: 27px;
+  height: 44px;
   border-left: 0;
   border-radius: 0 22px 22px 0;
   transform: rotate(-20deg);
   transform-origin: left top;
 }
 
-.bubble {
-  position: absolute;
-  right: 22px;
-  bottom: 125px;
-  width: 190px;
-  padding: 10px 12px;
-  border-radius: 14px;
-  background: rgba(255,255,255,.96);
-  color: #292323;
-  font-size: 13px;
-  line-height: 1.35;
-  box-shadow: 0 8px 25px rgba(0,0,0,.18);
-  -webkit-app-region: no-drag;
+.paw {
+  top: 98px;
+  width: 18px;
+  height: 16px;
+  border-radius: 8px;
 }
-
-.bubble::after {
-  content: "";
-  position: absolute;
-  right: 30px;
-  bottom: -7px;
-  width: 14px;
-  height: 14px;
-  background: white;
-  transform: rotate(45deg);
-}
-
-.hidden { display: none; }
+.left-paw { left: 24px; }
+.right-paw { left: 61px; }
 
 @keyframes bob {
   0%, 100% { transform: translateY(0); }
@@ -130,7 +168,16 @@ html, body {
 }
 
 .cat.walk { animation: walk .35s steps(2) infinite; }
-
 @keyframes walk {
   50% { transform: translateY(-5px) translateX(2px); }
+}
+
+.cat.sleep { animation: sleep 2s steps(2) infinite; opacity: .82; }
+@keyframes sleep {
+  50% { transform: translateY(4px); }
+}
+
+.cat.happy { animation: happy .28s steps(2) infinite; }
+@keyframes happy {
+  50% { transform: translateY(-10px) rotate(-3deg); }
 }
