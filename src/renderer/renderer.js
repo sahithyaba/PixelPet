@@ -111,7 +111,7 @@ async function command(raw) {
 
   if (text === "hello" || text === "hi" || text === "hey") {
     mood("happy");
-    addMessage("Woof! I'm PixelPet. 🐶 No AI needed — I live locally on your Mac.");
+    addMessage("Woof! Hi! 🐶 I'm PixelPet. I'm right here with you.");
     return;
   }
 
@@ -244,7 +244,10 @@ let wanderTimer = null;
 let behaviorTimer = null;
 let attentionTimer = null;
 let walking = false;
-let wanderActive = true;
+let wanderActive = false;
+let systemIdleSeconds = 0;
+const IDLE_TO_WANDER = 5 * 60;
+let waterReminderTimer = null;
 
 const DOG_STATES = ["idle","walk","happy","curious","sit","greet","pat","bored","angry","confront","look","sniff","stretch","lie","wake"];
 
@@ -295,10 +298,21 @@ function walkTo(x, y, duration) {
   }, duration);
 }
 
-function scheduleWander() {
+async function refreshSystemIdle() {
+  if (!window.pixelPet?.getSystemIdleSeconds) return;
+  try {
+    systemIdleSeconds = await window.pixelPet.getSystemIdleSeconds();
+    wanderActive = systemIdleSeconds >= IDLE_TO_WANDER;
+  } catch {
+    wanderActive = false;
+  }
+}
+
+async function scheduleWander() {
   clearTimeout(wanderTimer);
+  await refreshSystemIdle();
   if (!wanderActive || state.mood === "sleepy") {
-    wanderTimer = setTimeout(scheduleWander, 5000);
+    wanderTimer = setTimeout(scheduleWander, 10000);
     return;
   }
 
@@ -310,7 +324,7 @@ function scheduleWander() {
   const duration = 1100 + Math.floor(Math.random() * 1600);
 
   walkTo(x, y, duration);
-  wanderTimer = setTimeout(scheduleWander, duration + 2800 + Math.random() * 4500);
+  wanderTimer = setTimeout(scheduleWander, duration + 5000 + Math.random() * 7000);
 }
 
 function dogLifeBehavior() {
@@ -359,5 +373,39 @@ dog.addEventListener("click", () => {
   input.focus();
 });
 
-setTimeout(scheduleWander, 3000);
+setInterval(refreshSystemIdle, 10000);
+setTimeout(scheduleWander, 1000);
 scheduleDogLife();
+
+function startWaterReminder() {
+  clearInterval(waterReminderTimer);
+  waterReminderTimer = setInterval(() => {
+    addMessage("💧 Time for a water break! Take a moment to drink some water.");
+    petReact("greet");
+  }, 60 * 60 * 1000);
+}
+startWaterReminder();
+
+function touchReaction(type, message) {
+  petReact(type);
+  showBubbleMessage(message);
+}
+
+document.querySelectorAll(".touch-eye").forEach((eye) => {
+  eye.addEventListener("click", (event) => {
+    event.stopPropagation();
+    touchReaction("touch-look", "👀 Hey! My eyes!");
+  });
+});
+document.querySelector(".touch-nose")?.addEventListener("click", (event) => {
+  event.stopPropagation();
+  touchReaction("touch-happy", "🐶 Boop! *tail wag*");
+});
+document.querySelector(".touch-collar")?.addEventListener("click", (event) => {
+  event.stopPropagation();
+  touchReaction("touch-happy", "💜 You touched my collar!");
+});
+document.querySelector(".touch-tail")?.addEventListener("click", (event) => {
+  event.stopPropagation();
+  touchReaction("touch-wag", "🐕 My tail!");
+});
